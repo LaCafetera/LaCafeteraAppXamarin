@@ -19,5 +19,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)LaCafeteraPage.xaml.cs">
       <DependentUpon>LaCafeteraPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)StreamingAudio\QueueStream.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StreamingAudio\StreamingAudioErrorEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StreamingAudio\StreamingAudioManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StreamingAudio\StreamingPlayback.cs" />
   </ItemGroup>
 </Project>
