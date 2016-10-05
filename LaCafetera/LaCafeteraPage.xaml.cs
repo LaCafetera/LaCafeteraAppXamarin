@@ -1,7 +1,5 @@
 ﻿using Xamarin.Forms;
 using System;
-using Foundation;
-using UIKit;
 
 using StreamingAudio;
 

@@ -11,6 +11,9 @@
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)App.xaml" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)LaCafeteraPage.xaml" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)EpisodeListPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
@@ -23,5 +26,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)StreamingAudio\StreamingAudioErrorEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StreamingAudio\StreamingAudioManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StreamingAudio\StreamingPlayback.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EpisodeListPage.xaml.cs">
+      <DependentUpon>EpisodeListPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\EpisodeViewModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)ViewModels\" />
   </ItemGroup>
 </Project>

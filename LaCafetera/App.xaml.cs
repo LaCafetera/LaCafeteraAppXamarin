@@ -8,7 +8,8 @@ namespace LaCafetera
 		{
 			InitializeComponent();
 
-			MainPage = new LaCafeteraPage();
+			//MainPage = new LaCafeteraPage();
+			MainPage = new EpisodeListPage();
 		}
 
 		protected override void OnStart()
