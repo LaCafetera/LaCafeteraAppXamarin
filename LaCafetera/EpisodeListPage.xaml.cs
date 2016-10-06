@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 using Xamarin.Forms;
 
@@ -11,18 +12,21 @@ namespace LaCafetera
 		{
 			InitializeComponent();
 
-			List<EpisodeViewModel> episodes = new List<EpisodeViewModel>();
-			EpisodeViewModel episode;
+			Episodes = new ObservableCollection<EpisodeViewModel>();
+
 			for (int i = 0; i < 10; ++i)
 			{
-				episode = new EpisodeViewModel();
-				episode.ID =  i.ToString();
+				EpisodeViewModel episode = new EpisodeViewModel();
+				episode.ID = i.ToString();
 				episode.Title = "Episode " + i;
 				episode.URL = "<URL>";
-				episodes.Add(episode);
+				Episodes.Add(episode);
 			}
 
-			this.lstEpisodes.ItemsSource = episodes;
+			this.lstEpisodes.ItemsSource = Episodes;
 		}
+
+		ObservableCollection<EpisodeViewModel> Episodes { get; set; }
+
 	}
 }
