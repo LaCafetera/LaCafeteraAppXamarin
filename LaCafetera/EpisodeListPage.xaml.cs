@@ -10,16 +10,24 @@ using Xamarin.Forms;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
+using StreamingAudio;
+
+
 namespace LaCafetera
 {
 	public partial class EpisodeListPage : ContentPage
 	{
+		StreamingAudioManager streamingAudioManager;
+		
 		public EpisodeListPage()
 		{
 			InitializeComponent();
 
+			streamingAudioManager = new StreamingAudioManager();
+
 			Episodes = new ObservableCollection<EpisodeViewModel>();
 			this.lstEpisodes.ItemsSource = Episodes;
+			this.lstEpisodes.ItemTapped += this.OnItemTapped;
 		}
 
 		ObservableCollection<EpisodeViewModel> Episodes { get; set; }
@@ -94,5 +102,10 @@ namespace LaCafetera
 			return episodes;
 		}
 
+		private void OnItemTapped(object sender, ItemTappedEventArgs eventArgs)
+		{
+			EpisodeViewModel episode = (LaCafetera.EpisodeViewModel)eventArgs.Item;
+			streamingAudioManager.Play(episode.URL, PlayerOption.Stream);
+		}
 	}
 }
