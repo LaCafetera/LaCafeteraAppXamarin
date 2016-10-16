@@ -11,6 +11,8 @@ Este prototipo debe ser capaz de ofrecer dos funcionalidades básicas:
     
     
 En esta página se encuentra la descripción sobre la API de Spreaker: [https://developers.spreaker.com/api/](https://developers.spreaker.com/api/)
+
+Para abrir este proyecto necesitarás tener instalado Xamarin Studio Community en Mac o Visual Studio Community with Xamarin en Windows [https://www.xamarin.com/download](https://www.xamarin.com/download).
   
   
   
