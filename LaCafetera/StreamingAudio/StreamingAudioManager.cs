@@ -4,9 +4,14 @@ using System.Diagnostics;
 using System.Net;
 using System.Threading;
 
+#if __IOS__
 using AudioToolbox;
 using AVFoundation;
+#endif
 
+#if __ANDROID__
+// TODO: Android-specific libraries
+#endif
 
 namespace StreamingAudio
 {
@@ -37,8 +42,16 @@ namespace StreamingAudio
 
 		public void Play(string streamURL, PlayerOption playerOption)
 		{
-			var session = AVAudioSession.SharedInstance();
-			if (session == null)
+			bool audioSessionReady = false;
+#if __IOS__
+			audioSessionReady = AVAudioSession.SharedInstance() != null;
+#endif
+
+#if __ANDROID__
+			// TODO: Android-specific code
+#endif
+
+			if (!audioSessionReady)
 			{
 				string description = "Unable to get AVAudioSession.SharedInstance";
 				Debug.WriteLine(description);
@@ -83,7 +96,13 @@ namespace StreamingAudio
 			double sampleRate = 0;
 
 			Stream inputStream;
+#if __IOS__
 			AudioQueueTimeline timeline = null;
+#endif
+
+#if __ANDROID__
+			// TODO: Android-specific code
+#endif
 
 			var request = result.AsyncState as HttpWebRequest;
 			try
@@ -98,11 +117,18 @@ namespace StreamingAudio
 
 				using (player = new StreamingPlayback())
 				{
+#if __IOS__
 					player.OutputReady += delegate
 					{
 						timeline = player.OutputQueue.CreateTimeline();
 						sampleRate = player.OutputQueue.SampleRate;
 					};
+#endif
+
+#if __ANDROID__
+					// TODO: Android-specific code
+#endif
+
 					/*
 										InvokeOnMainThread(delegate
 										{

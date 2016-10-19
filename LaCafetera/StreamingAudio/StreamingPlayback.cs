@@ -1,8 +1,15 @@
 using System;
-using AudioToolbox;
 using System.Threading;
 using System.Collections.Generic;
 using System.Linq;
+
+#if __IOS__
+using AudioToolbox;
+#endif
+
+#if __ANDROID__
+// TODO: Android-specific libraries
+#endif
 
 namespace StreamingAudio
 {
@@ -13,7 +20,13 @@ namespace StreamingAudio
 	{
 		public IntPtr Buffer { get; set; }
 
+#if __IOS__
 		public List<AudioStreamPacketDescription> PacketDescriptions { get; set; }
+#endif
+
+#if __ANDROID__
+		// TODO: Android-specific code
+#endif
 
 		public int CurrentOffset { get; set; }
 
@@ -26,10 +39,16 @@ namespace StreamingAudio
 	public class StreamingPlayback : IDisposable
 	{
 		public event EventHandler Finished;
+#if __IOS__
 		public event Action<OutputAudioQueue> OutputReady;
 
 		// the AudioToolbox decoder
 		AudioFileStream fileStream;
+#endif
+
+#if __ANDROID__
+		// TODO: Android-specific code
+#endif
 		int bufferSize = 128 * 1024;
 		List<AudioBuffer> outputBuffers;
 		AudioBuffer currentBuffer;
@@ -42,11 +61,18 @@ namespace StreamingAudio
 		//Used to trigger a dump of the last buffer.
 		bool lastPacket;
 
+#if __IOS__
 		public OutputAudioQueue OutputQueue;
+#endif
+
+#if __ANDROID__
+		// TODO: Android-specific code
+#endif
 
 		public bool Started  { get; private set; }
 
 		public float Volume {
+#if __IOS__
 			get {
 				return OutputQueue.Volume;
 			}
@@ -54,6 +80,19 @@ namespace StreamingAudio
 			set {
 				OutputQueue.Volume = value;
 			}
+#endif
+
+#if __ANDROID__
+			// TODO: Android-specific code
+			get
+			{
+				return 0;
+			}
+
+			set
+			{
+			}
+#endif
 		}
 
 		/// <summary>
@@ -83,19 +122,23 @@ namespace StreamingAudio
 			}
 		}
 
-		public StreamingPlayback () : this (AudioFileType.MP3)
+		public StreamingPlayback ()
 		{
-		}
-
-		public StreamingPlayback (AudioFileType type)
-		{
-			fileStream = new AudioFileStream (type);
+#if __IOS__
+			fileStream = new AudioFileStream (AudioFileType.MP3);
 			fileStream.PacketDecoded += AudioPacketDecoded;
 			fileStream.PropertyFound += AudioPropertyFound;
+#endif
+
+#if __ANDROID__
+			// TODO: Android-specific code
+#endif
+
 		}
 
 		public void Reset ()
 		{
+#if __IOS__
 			if (fileStream != null) {
 				fileStream.Close ();
 				fileStream = new AudioFileStream (AudioFileType.MP3);
@@ -103,10 +146,16 @@ namespace StreamingAudio
 				fileStream.PacketDecoded += AudioPacketDecoded;
 				fileStream.PropertyFound += AudioPropertyFound;
 			}
+#endif
+
+#if __ANDROID__
+			// TODO: Android-specific code
+#endif
 		}
 
 		public void ResetOutputQueue ()
 		{
+#if __IOS__
 			if (OutputQueue != null) {
 				OutputQueue.Stop (true);
 				OutputQueue.Reset ();
@@ -117,6 +166,11 @@ namespace StreamingAudio
 				outputBuffers = null;
 				OutputQueue.Dispose ();
 			}
+#endif
+
+#if __ANDROID__
+			// TODO: Android-specific code
+#endif
 		}
 
 		/// <summary>
@@ -124,7 +178,13 @@ namespace StreamingAudio
 		/// </summary>
 		public void Pause ()
 		{
+#if __IOS__
 			OutputQueue.Pause ();
+#endif
+
+#if __ANDROID__
+			// TODO: Android-specific code
+#endif
 			Started = false;
 		}
 
@@ -133,7 +193,13 @@ namespace StreamingAudio
 		/// </summary>
 		public void Play ()
 		{
+#if __IOS__
 			OutputQueue.Start ();
+#endif
+
+#if __ANDROID__
+			// TODO: Android-specific code
+#endif
 			Started = true;
 		}
 
@@ -143,7 +209,13 @@ namespace StreamingAudio
 		public void ParseBytes (byte[] buffer, int count, bool discontinuity, bool lastPacket)
 		{
 			this.lastPacket = lastPacket;
+#if __IOS__
 			fileStream.ParseBytes (buffer, 0, count, discontinuity);
+#endif
+
+#if __ANDROID__
+			// TODO: Android-specific code
+#endif
 		}
 
 		public void Dispose ()
@@ -157,8 +229,9 @@ namespace StreamingAudio
 		/// </summary>
 		protected virtual void Dispose (bool disposing)
 		{
-			if (disposing) {
-
+			if (disposing)
+			{
+#if __IOS__
 				if (OutputQueue != null)
 					OutputQueue.Stop(true);
 
@@ -179,9 +252,16 @@ namespace StreamingAudio
 					OutputQueue.Dispose ();
 					OutputQueue = null;
 				}
+#endif
+
+#if __ANDROID__
+				// TODO: Android-specific code
+#endif
 			}
 		}
 
+
+#if __IOS__
 		/// <summary>
 		/// Saving the decoded Packets to our active Buffer, if the Buffer is full queue it into the OutputQueue
 		/// and wait until another buffer gets freed up
@@ -211,16 +291,23 @@ namespace StreamingAudio
 			if ((fileStream != null && currentByteCount == fileStream.DataByteCount) || lastPacket)
 				EnqueueBuffer ();
 		}
+#endif
 
 		/// <summary>
 		/// Flush the current buffer and close the whole thing up
 		/// </summary>
 		public void FlushAndClose ()
 		{
+#if __IOS__
 			if (OutputQueue != null) {
 				EnqueueBuffer ();
 				OutputQueue.Flush ();
 			}
+#endif
+
+#if __ANDROID__
+			// TODO: Android-specific code
+#endif
 
 			Dispose ();
 		}
@@ -231,7 +318,13 @@ namespace StreamingAudio
 		void EnqueueBuffer ()
 		{
 			currentBuffer.IsInUse = true;
+#if __IOS__
 			OutputQueue.EnqueueBuffer (currentBuffer.Buffer, currentBuffer.CurrentOffset, currentBuffer.PacketDescriptions.ToArray ());
+#endif
+
+#if __ANDROID__
+			// TODO: Android-specific code
+#endif
 			queuedBufferCount++;
 			StartQueueIfNeeded ();
 		}
@@ -258,6 +351,7 @@ namespace StreamingAudio
 			Play ();
 		}
 
+#if __IOS__
 		/// <summary>
 		/// When a AudioProperty in the fed packets is found this callback is called
 		/// </summary>
@@ -316,5 +410,6 @@ namespace StreamingAudio
 			if (queuedBufferCount == 0 && Finished != null)
 				Finished (this, new EventArgs ());
 		}
+#endif
 	}
 }
